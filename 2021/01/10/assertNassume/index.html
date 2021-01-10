@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>The Difference Between Assert and Assume | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Source: https:&#x2F;&#x2F;blogs.msdn.microsoft.com&#x2F;francesco&#x2F;2014&#x2F;09&#x2F;03&#x2F;faq-1-what-is-the-difference-between-assert-and-assume&#x2F; In CodeContracts, as in most verification systems, we have two APIs to check the v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Difference Between Assert and Assume">
+<meta property="og:url" content="http://example.com/2021/01/10/assertNassume/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Source: https:&#x2F;&#x2F;blogs.msdn.microsoft.com&#x2F;francesco&#x2F;2014&#x2F;09&#x2F;03&#x2F;faq-1-what-is-the-difference-between-assert-and-assume&#x2F; In CodeContracts, as in most verification systems, we have two APIs to check the v">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-10T05:33:58.919Z">
+<meta property="article:modified_time" content="2021-01-10T05:33:58.920Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-assertNassume" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/01/10/assertNassume/" class="article-date">
+  <time class="dt-published" datetime="2021-01-10T05:33:58.919Z" itemprop="datePublished">2021-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/formal-verification/">formal verification</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      The Difference Between Assert and Assume
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>Source: <a target="_blank" rel="noopener" href="https://blogs.msdn.microsoft.com/francesco/2014/09/03/faq-1-what-is-the-difference-between-assert-and-assume/">https://blogs.msdn.microsoft.com/francesco/2014/09/03/faq-1-what-is-the-difference-between-assert-and-assume/</a></p>
+<p>In CodeContracts, as in most verification systems, we have two APIs to check the validity of an expression at a given program point: Contract.Assert and Contract.Assume. People (even very smart Academics with a Ph.D. in computer science!) often get confused by the two concepts. They tend to use Contract.Assert most of the times.</p>
+<p>In this first post, I’d like to explain the difference between the two concepts, and guide you in the usage of one or the other kind of contract.</p>
+<p>Intuitively, Assert is something that you expect the static checker be able to prove at compile time, whereas Assume is something that the static checker can rely upon, but it will not try to prove. At runtime Assert and Assume behave the same: If the condition is false, then the program fails – how it fails (<em>e.g.</em>, throwing an exception, opening a dialog box, etc. can be completely customized with CodeContracts).  </p>
+<p>For instance, in the code below we expect that on loop exit that the value of i is 1001, and we ask the static checker to prove it.</p>
+<pre><code>public void Count()
+&#123;
+  var i = 0;
+  var j = 1000;
+  while (j &gt;= 0)
+  &#123;
+    i++;
+    j--;
+  &#125;
+  Contract.Assert(i == 1001);
+&#125;</code></pre>
+<p>In fact, the static analyzer infers that after the loop:</p>
+<p>i + j == 1000 and j == -1</p>
+<p>and it deduces that the assertion holds.</p>
+<p><strong>Intermezzo:</strong> Try this example with the CodeContracts static checker and you see that it can prove the assertion. Then try to change the assertion, let’s say to i == 1000, and it will complain that it is false. How the tool infer the loop invariant? Stay tuned, I will post about it…</p>
+<p>Nevertheless, there is so much that <strong>every</strong> static program analyzer or verifier in the world knows or can infer (do you remember <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Halting_problem">Turing</a>?). There are cases where we need to help the tool by telling <em>“please believe me, at this program point this condition is true, so do not try to prove it”</em>. In such cases you will use Contract.Assume.</p>
+<p>As an example, let us imagine that we have a sensor that reads the room temperature, but it does it using the Kelvin temperature scale. The Kelvin temperature scale is great for science (values are always non-negative, the smallest values is the absolute zero) but not so much for humans (70K may seem very hot, but actually it’s extremely cold…). So, let’s write a small function to read from our sensor and convert to Celsius. We are careful programmers, and we also want to document, via a postcondition, the smallest value our implementation can return. Our code looks like</p>
+<pre><code>// No contract
+extern double ReadTheTemperatureInKelvinFromSensors();
+
+public double GetTemperatureInCelsius()
+&#123;
+    Contract.Ensures(Contract.Result&lt;double&gt;() &gt;= -273.15);
+
+    var kelvin = ReadTheTemperatureInKelvinFromSensors();
+
+    return kelvin - 273.15;
+&#125;</code></pre>
+<p>Then, we want to prove it correct. So we run the static checker. Which complains that it cannot prove the postcondition. Why is this? The problem is that the static checker has no knowledge about what  ReadTheTemperatureInKelvinFromSensors does, and in particular it does not know that it always returns a non-negative value. We make this assumption explicit, to the static checker, but also to the human who reads the code:</p>
+<pre><code>public double GetTemperatureInCelsius()
+&#123;
+    Contract.Ensures(Contract.Result&lt;double&gt;() &gt;= -273.15);
+
+    var kelvin = ReadTheTemperatureInKelvinFromSensors();
+
+    Contract.Assume(kelvin &gt;= 0, &quot;Physical world assumption - Checked at runtime&quot;);
+
+    return kelvin - 273.15;
+&#125;</code></pre>
+<p>The static checker will not try to prove that kelvin is non-negative, it will assume it and as a consequence it will prove the postcondition will never be violated. But what happens at runtime if there is a failure in the sensor and it will return a “crazy” value? Well, as we made the assumption explicit, the execution will stop at Assume(kelvin &gt;= 0) immediately pointing out the place where something went wrong…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/01/10/assertNassume/" data-id="ckjqpp0te0004uo9kcplw7870" data-title="The Difference Between Assert and Assume" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/01/10/2021-01-10/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          IPv4环境下访问北邮人
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/01/10/2021-01-10-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">ChromeOS安装vs code</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/formal-verification/">formal verification</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/misc/">misc</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/operations/">operations</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/tex/">tex</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/uncategorized/">uncategorized</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/10/labs/">Labs in the area of verification</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/thu-network/">清华上网不完全指南</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/2021-01-10-1/">shadowsocks</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/warehouse/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/2021-01-10/">IPv4环境下访问北邮人</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

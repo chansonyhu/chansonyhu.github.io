@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>IPv4环境下访问北邮人 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="思路：利用支持IPv6的梯子给BT下载器做代理，实现tracker和用户的连接；将bt.byr.cn加入shadowsocks代理列表，实现域名的访问。 要点：  搭建vultr代理，用snap安装shadowsocks-libv 注意snap是沙盒机制，只能访问其范围内的文件  安装1234snap install shadowsocks-libevmkdir -p &#x2F;var&amp;#x2F">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IPv4环境下访问北邮人">
+<meta property="og:url" content="http://example.com/2021/01/10/2021-01-10/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="思路：利用支持IPv6的梯子给BT下载器做代理，实现tracker和用户的连接；将bt.byr.cn加入shadowsocks代理列表，实现域名的访问。 要点：  搭建vultr代理，用snap安装shadowsocks-libv 注意snap是沙盒机制，只能访问其范围内的文件  安装1234snap install shadowsocks-libevmkdir -p &#x2F;var&amp;#x2F">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-01-10T05:33:58.919Z">
+<meta property="article:modified_time" content="2021-01-10T05:33:58.919Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2021-01-10" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/01/10/2021-01-10/" class="article-date">
+  <time class="dt-published" datetime="2021-01-10T05:33:58.919Z" itemprop="datePublished">2021-01-10</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/operations/">operations</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      IPv4环境下访问北邮人
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>思路：利用支持IPv6的梯子给BT下载器做代理，实现tracker和用户的连接；将bt.byr.cn加入shadowsocks代理列表，实现域名的访问。</p>
+<p>要点：</p>
+<ol>
+<li>搭建vultr代理，用snap安装shadowsocks-libv<ul>
+<li>注意snap是沙盒机制，只能访问其范围内的文件 </li>
+<li>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">snap install shadowsocks-libev</span><br><span class="line">mkdir -p &#x2F;var&#x2F;snap&#x2F;shadowsocks-libev&#x2F;common&#x2F;etc&#x2F;shadowsocks-libev</span><br><span class="line">touch &#x2F;var&#x2F;snap&#x2F;shadowsocks-libev&#x2F;common&#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br><span class="line">vim &#x2F;var&#x2F;snap&#x2F;shadowsocks-libev&#x2F;common&#x2F;etc&#x2F;shadowsocks-libev&#x2F;config.json</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 配置系统服务</span><br><span class="line">touch &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;shadowsocks-libev-server@.service</span><br><span class="line">vim &#x2F;etc&#x2F;systemd&#x2F;system&#x2F;shadowsocks-libev-server@.service</span><br><span class="line">systemctl enable --now shadowsocks-libev-server@config</span><br><span class="line">systemctl status shadowsocks-libev-server@config</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; shadowsocks-libev-server@.service</span><br><span class="line">[Unit]</span><br><span class="line">Description&#x3D;Shadowsocks-Libev Custom Server Service for %I</span><br><span class="line">Documentation&#x3D;man:ss-server(1)</span><br><span class="line">After&#x3D;network-online.target</span><br><span class="line">    </span><br><span class="line">[Service]</span><br><span class="line">Type&#x3D;simple</span><br><span class="line">ExecStart&#x3D;&#x2F;usr&#x2F;bin&#x2F;snap run shadowsocks-libev.ss-server -c &#x2F;var&#x2F;snap&#x2F;shadowsocks-libev&#x2F;common&#x2F;etc&#x2F;shadowsocks-libev&#x2F;%i.json</span><br><span class="line">    </span><br><span class="line">[Install]</span><br><span class="line">WantedBy&#x3D;multi-user.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; config.json</span><br><span class="line">&#123;</span><br><span class="line">   &quot;server&quot;:[&quot;[::0]&quot;, &quot;0.0.0.0&quot;],</span><br><span class="line">   &quot;mode&quot;:&quot;tcp_and_udp&quot;,</span><br><span class="line">   &quot;server_port&quot;:443,</span><br><span class="line">   &quot;password&quot;:&quot;your-secure-password&quot;,</span><br><span class="line">   &quot;timeout&quot;:60,</span><br><span class="line">   &quot;method&quot;:&quot;chacha20-ietf-poly1305&quot;,</span><br><span class="line">   &quot;nameserver&quot;:&quot;1.1.1.1&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>下载支持代理的BT下载器<ul>
+<li>这里有很多坑，到北邮人的常见问题里找支持的下载器，最后只有Deluge可用。UTorrent不支持10.15以后的macOS，Transmission (3.0)没有代理选项。</li>
+<li>然后开启shadowsocks客户端，将<code>||bt.byr.cn</code>和<code>tracker.byr.cn</code>加入到PAC用户自定规则中</li>
+<li>在Deluge的代理中加入本地socks5代理</li>
+</ul>
+</li>
+</ol>
+<p>参考链接：</p>
+<ul>
+<li>貌似没什么用的用rust写的tracker-proxy. <a target="_blank" rel="noopener" href="https://gwy15.com/blog/%E5%AE%B6%E7%94%A8%E5%AE%BD%E5%B8%A6%E8%BF%9E%E6%8E%A5%E5%8C%97%E9%82%AE%E4%BA%BA-ipv6-PT">https://gwy15.com/blog/家用宽带连接北邮人-ipv6-PT</a></li>
+<li>一个比较粗暴的全局代理方法. <a target="_blank" rel="noopener" href="https://www.yukishirataco.moe/2019/01/15/%E5%9C%A8IPv4%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%A6%82%E4%BD%95%E8%AE%BF%E9%97%AE%E5%8C%97%E9%82%AE%E4%BA%BAPT%EF%BC%9F/">https://www.yukishirataco.moe/2019/01/15/在IPv4环境下如何访问北邮人PT？/</a></li>
+<li>snap安装shadowsocks-libv. <a target="_blank" rel="noopener" href="https://upcloud.com/community/tutorials/install-shadowsocks-libev-socks5-proxy/">https://upcloud.com/community/tutorials/install-shadowsocks-libev-socks5-proxy/</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/01/10/2021-01-10/" data-id="ckjqpp0td0003uo9k2yay8ysv" data-title="IPv4环境下访问北邮人" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/01/10/warehouse/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/01/10/assertNassume/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">The Difference Between Assert and Assume</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/formal-verification/">formal verification</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/misc/">misc</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/operations/">operations</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/tex/">tex</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/uncategorized/">uncategorized</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">January 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/01/10/labs/">Labs in the area of verification</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/thu-network/">清华上网不完全指南</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/2021-01-10-1/">shadowsocks</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/warehouse/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/01/10/2021-01-10/">IPv4环境下访问北邮人</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
